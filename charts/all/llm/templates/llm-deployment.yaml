@@ -58,13 +58,7 @@ spec:
           volumeMounts:
             - name: {{ .Values.global.amdllm.volume.tmp.name }}
               mountPath: {{ .Values.global.amdllm.volume.tmp.path }}
-            - name: {{ .Values.global.amdllm.volume.rhoai_ca.name }}
-              mountPath: {{ .Values.global.amdllm.volume.rhoai_ca.path }}
       restartPolicy: Always
       volumes:
         - name: {{ .Values.global.amdllm.volume.tmp.name }}
           emptyDir: {}
-        - name: {{ .Values.global.amdllm.volume.rhoai_ca.name }}
-          secret:
-            secretName: {{ .Values.global.amdllm.volume.rhoai_ca.name }}
-            defaultMode: 420
