@@ -8,7 +8,7 @@ global:
     build_envs: [] # http_proxy/https_prxy can be set here
     runtime_envs: []
 
-    service_name: chatqna
+    service_name: chatqna-backend
     service_port: 5008
     container_port: 8888
     docker_file_Path: Dockerfile
