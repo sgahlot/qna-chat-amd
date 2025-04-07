@@ -33,6 +33,11 @@ spec:
               value: {{ .value }}
             {{- end }}
             {{- end }}
+            - name: {{ .Values.global.amdllm.secret.env_var_name }}
+              valueFrom:
+                secretKeyRef:
+                  key: {{ .Values.global.amdllm.secret.key }}
+                  name: {{ .Values.global.amdllm.secret.name }}
             - name: {{ .Values.global.amdllm.tei_service.env_var_name }}
               value: "http://{{ .Values.global.amdllm.tei_service.name }}.{{ .Values.global.amdllm.namespace }}.svc.cluster.local:{{ .Values.global.amdllm.tei_service.port }}"
             {{- if .Values.global.amdllm.runtime_envs }}
