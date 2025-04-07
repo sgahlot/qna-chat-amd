@@ -158,20 +158,20 @@ clusterGroup:
         jsonPointers:
           - /metadata/labels/argocd.argoproj.io~1instance
           - /metadata/annotations/kubectl.kubernetes.io~1last-applied-configuration
-#    text-embeddings-inference:
-#      name: text-embeddings-inference
-#      namespace: amd-llm
-#      project: amd-llm
-#      path: charts/all/tei
-#      ignoreDifferences:
-#      - group: apps
-#        kind: Deployment
-#        jqPathExpressions:
-#        - '.spec.template.spec.containers[].image'
-#      - group: build.openshift.io
-#        kind: BuildConfig
-#        jqPathExpressions:
-#        - '.spec.paused'
+    text-embeddings-inference:
+      name: text-embeddings-inference
+      namespace: amd-llm
+      project: amd-llm
+      path: charts/all/tei
+      ignoreDifferences:
+      - group: apps
+        kind: Deployment
+        jqPathExpressions:
+        - '.spec.template.spec.containers[].image'
+      - group: build.openshift.io
+        kind: BuildConfig
+        jqPathExpressions:
+        - '.spec.paused'
     retriever:
       name: retriever
       namespace: amd-llm
