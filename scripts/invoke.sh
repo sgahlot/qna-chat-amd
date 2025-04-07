@@ -140,7 +140,9 @@ function invoke_endpoint() {
 
   # To see the command (with all the parameters etc.), uncomment the lines with "set +/-x"
   # set -x
-  local response_code=$( curl --max-time 300 -s -S -w '%{response_code}, exitCode=%{exitcode}\n' -X POST $OCP_HOST/v1/$endpoint --header "Content-Type: $content_type" $body_option "$body" -o $tmp_file )
+  local FULL_ENDPOINT="https://$OCP_HOST/v1/$endpoint"
+  printf "\n -> Using '$FULL_ENDPOINT' to invoke '$svc'...\n"
+  local response_code=$( curl --max-time 300 -s -S -w '%{response_code}, exitCode=%{exitcode}\n' -X POST $FULL_ENDPOINT --header "Content-Type: $content_type" $body_option "$body" -o $tmp_file )
   # set +x
 
   local response_body="$(cat $tmp_file)"
