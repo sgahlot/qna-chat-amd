@@ -164,7 +164,7 @@ function invoke_endpoint() {
 
 if [ -z "$OCP_HOST" ]; then
   printf '\n Please set "OCP_HOST" environment variable. It should be pointing to the main base-route for each micro-service'
-  printf '\n You can use the location of route "chatqna-backend-main-route" for setting OCP_HOST'
+  printf '\n You can use the location of route "chatqna-backend" for setting OCP_HOST'
   printf '\n Exiting!!!\n'
   exit
 fi
