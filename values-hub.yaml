@@ -172,20 +172,20 @@ clusterGroup:
         kind: BuildConfig
         jqPathExpressions:
         - '.spec.paused'
-#    retriever:
-#      name: retriever
-#      namespace: amd-llm
-#      project: amd-llm
-#      path: charts/all/retriever
-#      ignoreDifferences:
-#      - group: apps
-#        kind: Deployment
-#        jqPathExpressions:
-#        - '.spec.template.spec.containers[].image'
-#      - group: build.openshift.io
-#        kind: BuildConfig
-#        jqPathExpressions:
-#        - '.spec.paused'
+    retriever:
+      name: retriever
+      namespace: amd-llm
+      project: amd-llm
+      path: charts/all/retriever
+      ignoreDifferences:
+      - group: apps
+        kind: Deployment
+        jqPathExpressions:
+        - '.spec.template.spec.containers[].image'
+      - group: build.openshift.io
+        kind: BuildConfig
+        jqPathExpressions:
+        - '.spec.paused'
     reranking:
       name: reranking
       namespace: amd-llm
@@ -228,20 +228,20 @@ clusterGroup:
         kind: BuildConfig
         jqPathExpressions:
         - '.spec.paused'
-#    dataprep:
-#      name: dataprep
-#      namespace: amd-llm
-#      project: amd-llm
-#      path: charts/all/dataprep
-#      ignoreDifferences:
-#      - group: apps
-#        kind: Deployment
-#        jqPathExpressions:
-#        - '.spec.template.spec.containers[].image'
-#      - group: build.openshift.io
-#        kind: BuildConfig
-#        jqPathExpressions:
-#        - '.spec.paused'
+    dataprep:
+      name: dataprep
+      namespace: amd-llm
+      project: amd-llm
+      path: charts/all/dataprep
+      ignoreDifferences:
+      - group: apps
+        kind: Deployment
+        jqPathExpressions:
+        - '.spec.template.spec.containers[].image'
+      - group: build.openshift.io
+        kind: BuildConfig
+        jqPathExpressions:
+        - '.spec.paused'
 #    chatqna-/ui-server:
 #      name: chatqna-ui-server
 #      namespace: amd-llm
