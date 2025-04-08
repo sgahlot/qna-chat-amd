@@ -13,9 +13,9 @@ global:
     container_port: 8888
     docker_file_Path: Dockerfile
 
-    git_repo_uri: https://github.com/opea-project/GenAIExamples.git
+    git_repo_uri: https://github.com/sgahlot/GenAIExamples.git
     image: image-registry.openshift-image-registry.svc:5000/opea/chatqna:latest
-    git_ref: 68747a9   # make sure to validate buildconfig & other change scope before updating
+    git_ref: 04304c45   # make sure to validate buildconfig & other change scope before updating
 
     megaservice_envs:
       - name: EMBEDDING_SERVER_HOST_IP
