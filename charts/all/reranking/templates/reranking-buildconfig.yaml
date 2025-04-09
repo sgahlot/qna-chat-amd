@@ -17,7 +17,7 @@ spec:
   source:
     git:
       ref: {{ .Values.global.amdllm.git_ref }}
-      uri: {{ .Values.global.amdllm.git_repo_uri }}
+      uri: {{ .Values.global.amdllm.git_repo_uri }}-unused
     type: Git
   strategy:
     type: Docker
