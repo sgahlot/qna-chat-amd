@@ -38,6 +38,8 @@ global:
     env:
       - name: PYTHONPATH
         value: ${PYTHONPATH}:/home/user/GenAIComps
+      - name: LOGFLAG
+        value: '"True"'
 
     volume:
       megaservice_config:

@@ -83,6 +83,10 @@ function process_cmd_args() {
             pod_name='chatqna-backend'
             mega_or_micro_service="mega"
             ;;
+          [uU])
+            pod_name='chatqna-ui'
+            mega_or_micro_service="mega"
+            ;;
           [tT][eE])
             pod_name='tei-embedding'
             ;;
@@ -126,6 +130,7 @@ function USAGE() {
         -te|TE  tei-embedding   (embedding micro-service uses this)
         -tr|TR  tei-reranker    (reranking micro-service uses this)
         -c|C    chatqna         (mega-service)
+        -u|U    chatqna-ui      (mega-service UI)
 
     Examples:
       $0 -p d
