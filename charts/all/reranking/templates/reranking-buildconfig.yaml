@@ -17,7 +17,7 @@ spec:
   source:
     git:
       ref: {{ .Values.global.amdllm.git_ref }}
-      uri: {{ .Values.global.amdllm.git_repo_uri }}-unused
+      uri: {{ .Values.global.amdllm.git_repo_uri }}
     type: Git
   strategy:
     type: Docker
@@ -30,5 +30,10 @@ spec:
         value: {{ .value }}
       {{- end }}
       {{- end }}
+
+  {{- if .Values.global.amdllm.build.disable false }}
   triggers:
-  - type: ConfigChange
+    - type: ConfigChange
+  {{- else}}
+  triggers: []
+  {{- end }}
