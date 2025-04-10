@@ -13,7 +13,10 @@ global:
     container_port: 8888
     docker_file_Path: Dockerfile
 
-    image: quay.io/sgahlot/opea/chatqna:latest
+    image:
+      pre_built: quay.io/sgahlot/opea/chatqna:latest
+      from_source: image-registry.openshift-image-registry.svc:5000/opea/chatqna:latest
+
     git_repo_uri: https://github.com/opea-project/GenAIExamples.git
     git_ref: 61a8bef   # make sure to validate buildconfig & other change scope before updating
 
