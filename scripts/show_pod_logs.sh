@@ -17,10 +17,13 @@ function show_logs() {
       ;;
   esac
 
+  #set -x
+  #printf "\n searching for pod_name=$pod_name\n"
   local RUNNING_PODS=$(oc get pods -n $NAMESPACE -l $label --field-selector status.phase=Running)
   # printf "\n$RUNNING_PODS\n"
 
   pod=$(echo "$RUNNING_PODS" | awk -v pattern="^$pod_name" '$1 ~ pattern {print $1}')
+  #set +x
   printf "\n -> Streaming logs from [$pod]\n"
 
   oc logs -f "$pod" -n $NAMESPACE
