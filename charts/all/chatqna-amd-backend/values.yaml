@@ -18,7 +18,7 @@ global:
     git_ref: 61a8bef   # make sure to validate buildconfig & other change scope before updating
 
     build:
-      disable: true
+      enable: false
 
     megaservice_envs:
       - name: EMBEDDING_SERVER_HOST_IP

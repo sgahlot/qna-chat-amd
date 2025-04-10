@@ -34,7 +34,7 @@ spec:
       {{- end }}
       {{- end }}
 
-  {{- if .Values.global.amdllm.build.disable false }}
+  {{- if .Values.global.amdllm.build.enable }}
   triggers:
     - type: ConfigChange
   {{- else}}

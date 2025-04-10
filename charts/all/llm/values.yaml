@@ -29,7 +29,7 @@ global:
           key: inference_endpoint
 
     build:
-      disable: true
+      enable: false
 
     env:
       - name: HOME
