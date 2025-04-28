@@ -29,9 +29,9 @@ spec:
         - name: copy-ui-to-workdir
           image:
             {{- if .Values.global.build.enabled }}
-            {{ .Values.global.amdllm.image.from_source }}
+            {{ .Values.global.amdllm.images.chatqna_ui.from_source }}
             {{- else}}
-            {{ .Values.global.amdllm.image.pre_built }}
+            {{ .Values.global.amdllm.images.chatqna_ui.pre_built }}
             {{- end }}
           command:
             - /bin/bash
@@ -62,9 +62,9 @@ spec:
             {{- end }}
           image:
             {{- if .Values.global.build.enabled }}
-            {{ .Values.global.amdllm.image.from_source }}
+            {{ .Values.global.amdllm.images.chatqna_ui.from_source }}
             {{- else}}
-            {{ .Values.global.amdllm.image.pre_built }}
+            {{ .Values.global.amdllm.images.chatqna_ui.pre_built }}
             {{- end }}
           name: {{ .Values.global.amdllm.service_name }}-server
           ports:

@@ -41,9 +41,9 @@ spec:
             {{- end }}
           image:
             {{- if .Values.global.build.enabled }}
-            {{ .Values.global.amdllm.image.from_source }}
+            {{ .Values.global.amdllm.images.dataprep.from_source }}
             {{- else}}
-            {{ .Values.global.amdllm.image.pre_built }}
+            {{ .Values.global.amdllm.images.dataprep.pre_built }}
             {{- end }}
           name: {{ .Values.global.amdllm.service_name }}-server
           ports:
