@@ -1,5 +1,5 @@
 ---
-# Source: tei-embedding-service/templates/tei-embedding-service-claim0-persistentvolumeclaim.yaml
+# Source: tei-service/templates/tei-persistentVolumeClaims.yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -14,7 +14,7 @@ spec:
     requests:
       storage: 3Gi
 ---
-# Source: tei-embedding-service/templates/tei-embedding-service-service.yaml
+# Source: tei-service/templates/tei-services.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -27,21 +27,19 @@ metadata:
   namespace: gaudi-llm
 spec:
   ports:
-    - name: "8090"
-      port: 8090
-      targetPort: 8090
+    - name: "8808"
+      port: 8808
+      targetPort: 8080
   selector:
     io.kompose.service: tei-embedding-service
 ---
-# Source: tei-embedding-service/templates/tei-embedding-service-deployment.yaml
+# Source: tei-service/templates/tei-deployments.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
     kompose.cmd: kompose convert -f docker_compose.yaml
     kompose.version: 1.33.0 (3ce457399)
-    argocd.argoproj.io/sync-wave: "5"
-    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"tei-gaudi:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"tei-embedding-gaudi-server\")].image"}]'
   labels:
     io.kompose.service: tei-embedding-service
   name: tei-embedding-service
@@ -65,85 +63,27 @@ spec:
       containers:
         - args:
             - --model-id
-            - BAAI/bge-base-en-v1.5
+            - BAAI/bge-reranker-base
             - --port
-            - "8090"
+            - '8080'
           env:
             - name: HF_TOKEN
               valueFrom:
                 secretKeyRef:
                   key: huggingface
                   name: hf-token-secret
-            - name: OMPI_MCA_btl_vader_single_copy_mechanism
-              value: none
-            #- name: RUNTIME
-            #  value: habana
             - name: HOME
-              value: /tmp/temp-data
-          image: image-registry.openshift-image-registry.svc:5000/gaudi-llm/tei-gaudi:latest
-          name: tei-embedding-gaudi-server
+              value: /data
+          image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.2
+          name: tei-embedding-server
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               protocol: TCP
-          resources:
-            limits:
-              habana.ai/gaudi: "1"
-            requests:
-              habana.ai/gaudi: "1"
           volumeMounts:
             - mountPath: /data
-              name: tei-embedding-service-claim0
-            - mountPath: /dev/shm
-              name: shm
-            - name: temp-data
-              mountPath: /tmp/temp-data
+              name: tei-service-claim0
       restartPolicy: Always
       volumes:
-        - name: tei-embedding-service-claim0
+        - name: tei-service-claim0
           persistentVolumeClaim:
-            claimName: tei-embedding-service-claim0
-        - name: shm
-          emptyDir:
-            medium: Memory
-            sizeLimit: 2Gi
-        - name: temp-data
-          emptyDir: {}
----
-# Source: tei-embedding-service/templates/tei-embedding-service-buildconfig.yaml
-kind: BuildConfig
-apiVersion: build.openshift.io/v1
-metadata:
-  name: tei-gaudi
-  namespace: gaudi-llm
-spec:
-  output:
-    to:
-      kind: "ImageStreamTag"
-      name: "tei-gaudi:latest"
-  failedBuildsHistoryLimit: 5
-  successfulBuildsHistoryLimit: 5
-  nodeSelector: null
-  postCommit: {}
-  resources: {}
-  runPolicy: SerialLatestOnly
-  source:
-    git:
-      ref: a7ee6f1fe13ce8aed440d0baa0953cd8f5c23e0a
-      uri: https://github.com/huggingface/tei-gaudi.git
-    type: Git
-  strategy:
-    type: Docker
-    dockerStrategy:
-      dockerfilePath: Dockerfile-hpu
-  triggers:
-  - type: ConfigChange
----
-# Source: tei-embedding-service/templates/tei-embedding-service-imagestream.yaml
-apiVersion: image.openshift.io/v1
-kind: ImageStream
-metadata:
-  name: tei-gaudi
-  namespace: gaudi-llm
-spec:
-  lookupPolicy:
-    local: true
+            claimName: tei-service-claim0

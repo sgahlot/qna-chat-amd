@@ -7,13 +7,13 @@ metadata:
     argocd.argoproj.io/compare-options: IgnoreExtraneous
     argocd.argoproj.io/sync-wave: "5"
   labels:
-    io.kompose.service: embedding
-  name: embedding
-  namespace: {{ .Values.global.gaudillm.namespace }}
+    io.kompose.service: {{ .Values.global.amdllm.service_name }}
+  name: {{ .Values.global.amdllm.service_name }}
+  namespace: {{ .Values.global.amdllm.namespace }}
 spec:
   ports:
-    - name: "6000"
-      port: 6000
-      targetPort: 6000
+    - name: "{{ .Values.global.amdllm.service_port }}"
+      port: {{ .Values.global.amdllm.service_port }}
+      targetPort: {{ .Values.global.amdllm.container_port }}
   selector:
-    io.kompose.service: embedding
+    io.kompose.service: {{ .Values.global.amdllm.service_name }}

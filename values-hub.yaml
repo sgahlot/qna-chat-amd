@@ -5,33 +5,28 @@ clusterGroup:
     - open-cluster-management
     - vault
     - golang-external-secrets
-    - openshift-nfd
-    - habana-ai-operator
+    # TODO(SG): Create the AMD operator namespace (if needed)
+    - amd-gpu-operator
     - openshift-kmm:
         operatorGroup: true
-        targetNamespaces: 
+        targetNamespaces:
     - redhat-ods-operator:
         operatorGroup: true
-        targetNamespaces: 
-    - gaudi-llm
+        targetNamespaces:
+    - amd-llm
 
-  subscriptions:    
-    nfd:
-      name: nfd
-      namespace: openshift-nfd
-      channel: stable
-      source: redhat-operators
-
+  subscriptions:
     kmm:
       name: kernel-module-management
       namespace: openshift-kmm
       channel: stable
       source: redhat-operators
 
-    habana-ai:
-      name: habana-ai-operator
-      namespace: habana-ai-operator
-      channel: stable
+    amd-ai:
+      name: amd-gpu-operator
+      namespace: amd-gpu-operator
+      # TODO(SG): This is the ONLY channel available for this oeprator
+      channel: alpha
       source: certified-operators
 
     rhods:
@@ -55,11 +50,11 @@ clusterGroup:
 
   projects:
     - hub
-    - openshift-nfd
     - openshift-kmm
-    - habana-ai-operator
+    - amd-gpu-operator
     - redhat-ods-operator
-    - gaudi-llm
+    - amd-llm
+
   # Explicitly mention the cluster-state based overrides we plan to use for this pattern.
   # We can use self-referential variables because the chart calls the tpl function with these variables defined
   sharedValueFiles:
@@ -80,6 +75,7 @@ clusterGroup:
   # about and sets, so this is also possible, for example:
   #   - '/overrides/values-{{ $.Values.global.hubClusterDomain }}.yaml'
   #   - '/overrides/values-{{ $.Values.global.localClusterDomain }}.yaml'
+
   applications:
     vault:
       name: vault
@@ -91,17 +87,6 @@ clusterGroup:
       namespace: golang-external-secrets
       project: hub
       path: common/golang-external-secrets
-    nfd:
-      name: nfd
-      namespace: openshift-nfd
-      project: openshift-nfd
-      path: charts/all/nfd
-      ignoreDifferences:
-      - group: nfd.openshift.io
-        kind: NodeFeatureDiscovery
-        jqPathExpressions:
-        - '.spec.customConfig'
-        - '.spec.topologyupdater'
     kmm:
       name: kmm
       namespace: openshift-kmm
@@ -112,165 +97,163 @@ clusterGroup:
       namespace: openshift-storage
       project: hub
       path: charts/all/openshift-data-foundations
-    habana-ai:
-      name: habana-ai
-      namespace: habana-ai-operator
-      project: habana-ai-operator
-      path: charts/all/habana-ai
+    # TODO(SG): What's the AMD equivalent
+    # Will enable amd-ai charts once we've figured out what to add in the charts
+#    amd-gpu-operator:
+#      name: amd-ai
+#      namespace: amd-gpu-operator
+#      project: amd-gpu-operator
+#      path: charts/all/amd-ai
+#    habana-ai:
+#      name: habana-ai
+#      namespace: habana-ai-operator
+#      project: habana-ai-operator
+#      path: charts/all/habana-ai
     rhods-operator:
       name: rhods-operator
       namespace: redhat-ods-operator
       project: redhat-ods-operator
       path: charts/all/rhods-operator
-    rhods-gaudi-addons:
-      name: rhods-gaudi-addons
+    rhods-amd-addons:
+      name: rhods-amd-addons
       namespace: redhat-ods-operator
       project: redhat-ods-operator
-      path: charts/all/rhods-operator-gaudi-addons
-    tei-xeon-service:
-      name: tei-xeon-service
-      namespace: gaudi-llm
-      project: gaudi-llm
-      path: charts/all/tei-xeon-service
-      ignoreDifferences:
-      - group: apps
-        kind: Deployment
-        jqPathExpressions:
-        - '.spec.template.spec.containers[].image'
-      - group: build.openshift.io
-        kind: BuildConfig
-        jqPathExpressions:
-        - '.spec.paused'
-    tei-embedding-service:
-      name: tei-embedding-service
-      namespace: gaudi-llm
-      project: gaudi-llm
-      path: charts/all/tei-embedding-service
-      ignoreDifferences:
-      - group: apps
-        kind: Deployment
-        jqPathExpressions:
-        - '.spec.template.spec.containers[].image'
-      - group: build.openshift.io
-        kind: BuildConfig
-        jqPathExpressions:
-        - '.spec.paused'
-    retriever:
-      name: retriever
-      namespace: gaudi-llm
-      project: gaudi-llm
-      path: charts/all/retriever
-      ignoreDifferences:
-      - group: apps
-        kind: Deployment
-        jqPathExpressions:
-        - '.spec.template.spec.containers[].image'
-      - group: build.openshift.io
-        kind: BuildConfig
-        jqPathExpressions:
-        - '.spec.paused'
-    reranking:
-      name: reranking
-      namespace: gaudi-llm
-      project: gaudi-llm
-      path: charts/all/reranking
-      ignoreDifferences:
-      - group: apps
-        kind: Deployment
-        jqPathExpressions:
-        - '.spec.template.spec.containers[].image'
-      - group: build.openshift.io
-        kind: BuildConfig
-        jqPathExpressions:
-        - '.spec.paused'
+      path: charts/all/rhods-operator-amd-addons
+    init-secret:
+      name: init-secret
+      namespace: amd-llm
+      project: amd-llm
+      path: charts/all/init-secret
     redis-vector-db:
       name: redis-vector-db
-      namespace: gaudi-llm
-      project: gaudi-llm
+      namespace: amd-llm
+      project: amd-llm
       path: charts/all/redis-vector-db
-    llm-server-for-gaudi:
-      name: llm-server-for-gaudi
-      namespace: gaudi-llm
-      project: gaudi-llm
-      path: charts/all/llm-server-for-gaudi
+    amd-llm-init:
+      name: amd-llm-init
+      namespace: amd-llm
+      project: amd-llm
+      path: charts/all/amd-llm-init
       ignoreDifferences:
-      - group: apps
-        kind: Deployment
-        jqPathExpressions:
-        - '.spec.template.spec.containers[].image'
-      - group: build.openshift.io
-        kind: BuildConfig
-        jqPathExpressions:
-        - '.spec.paused'
-    gaudillm-init:
-      name: gaudillm-init
-      namespace: gaudi-llm
-      project: gaudi-llm
-      path: charts/all/gaudillm-init
+        - group: machineconfiguration.openshift.io
+          kind: KubeletConfig
+          name:
+          jsonPointers:
+            - /metadata/labels/argocd.argoproj.io~1instance
+            - /metadata/annotations/kubectl.kubernetes.io~1last-applied-configuration
+    text-embeddings-inference:
+      name: text-embeddings-inference
+      namespace: amd-llm
+      project: amd-llm
+      path: charts/all/tei
       ignoreDifferences:
-      - group: machineconfiguration.openshift.io
-        kind: KubeletConfig
-        name: 
-        jsonPointers:
-          - /metadata/labels/argocd.argoproj.io~1instance
-          - /metadata/annotations/kubectl.kubernetes.io~1last-applied-configuration
+        - group: apps
+          kind: Deployment
+          jqPathExpressions:
+            - '.spec.template.spec.containers[].image'
+        - group: build.openshift.io
+          kind: BuildConfig
+          jqPathExpressions:
+            - '.spec.paused'
+    retriever:
+      name: retriever
+      namespace: amd-llm
+      project: amd-llm
+      path: charts/all/retriever
+      ignoreDifferences:
+        - group: apps
+          kind: Deployment
+          jqPathExpressions:
+            - '.spec.template.spec.containers[].image'
+        - group: build.openshift.io
+          kind: BuildConfig
+          jqPathExpressions:
+            - '.spec.paused'
+    reranking:
+      name: reranking
+      namespace: amd-llm
+      project: amd-llm
+      path: charts/all/reranking
+      ignoreDifferences:
+        - group: apps
+          kind: Deployment
+          jqPathExpressions:
+            - '.spec.template.spec.containers[].image'
+        - group: build.openshift.io
+          kind: BuildConfig
+          jqPathExpressions:
+            - '.spec.paused'
+    llm:
+      name: llm
+      namespace: amd-llm
+      project: amd-llm
+      path: charts/all/llm
+      ignoreDifferences:
+        - group: apps
+          kind: Deployment
+          jqPathExpressions:
+            - '.spec.template.spec.containers[].image'
+        - group: build.openshift.io
+          kind: BuildConfig
+          jqPathExpressions:
+            - '.spec.paused'
     embedding:
       name: embedding
-      namespace: gaudi-llm
-      project: gaudi-llm
+      namespace: amd-llm
+      project: amd-llm
       path: charts/all/embedding
       ignoreDifferences:
-      - group: apps
-        kind: Deployment
-        jqPathExpressions:
-        - '.spec.template.spec.containers[].image'
-      - group: build.openshift.io
-        kind: BuildConfig
-        jqPathExpressions:
-        - '.spec.paused'
+        - group: apps
+          kind: Deployment
+          jqPathExpressions:
+            - '.spec.template.spec.containers[].image'
+        - group: build.openshift.io
+          kind: BuildConfig
+          jqPathExpressions:
+            - '.spec.paused'
     dataprep:
       name: dataprep
-      namespace: gaudi-llm
-      project: gaudi-llm
+      namespace: amd-llm
+      project: amd-llm
       path: charts/all/dataprep
       ignoreDifferences:
-      - group: apps
-        kind: Deployment
-        jqPathExpressions:
-        - '.spec.template.spec.containers[].image'
-      - group: build.openshift.io
-        kind: BuildConfig
-        jqPathExpressions:
-        - '.spec.paused'
-    chatqna-ui-server:
-      name: chatqna-ui-server
-      namespace: gaudi-llm
-      project: gaudi-llm
-      path: charts/all/chatqna-ui-server
+        - group: apps
+          kind: Deployment
+          jqPathExpressions:
+            - '.spec.template.spec.containers[].image'
+        - group: build.openshift.io
+          kind: BuildConfig
+          jqPathExpressions:
+            - '.spec.paused'
+    chatqna-ui:
+      name: chatqna-ui
+      namespace: amd-llm
+      project: amd-llm
+      path: charts/all/chatqna-ui
       ignoreDifferences:
-      - group: apps
-        kind: Deployment
-        jqPathExpressions:
-        - '.spec.template.spec.containers[].image'
-        - '.spec.template.spec.initContainers[].image'
-      - group: build.openshift.io
-        kind: BuildConfig
-        jqPathExpressions:
-        - '.spec.paused'
-    chatqna-gaudi-backend:
-      name: chatqna-gaudi-backend
-      namespace: gaudi-llm
-      project: gaudi-llm
-      path: charts/all/chatqna-gaudi-backend
+        - group: apps
+          kind: Deployment
+          jqPathExpressions:
+            - '.spec.template.spec.containers[].image'
+            - '.spec.template.spec.initContainers[].image'
+        - group: build.openshift.io
+          kind: BuildConfig
+          jqPathExpressions:
+            - '.spec.paused'
+    chatqna-backend:
+      name: chatqna-backend
+      namespace: amd-llm
+      project: amd-llm
+      path: charts/all/chatqna-amd-backend
       ignoreDifferences:
-      - group: apps
-        kind: Deployment
-        jqPathExpressions:
-        - '.spec.template.spec.containers[].image'
-      - group: build.openshift.io
-        kind: BuildConfig
-        jqPathExpressions:
-        - '.spec.paused'
+        - group: apps
+          kind: Deployment
+          jqPathExpressions:
+            - '.spec.template.spec.containers[].image'
+        - group: build.openshift.io
+          kind: BuildConfig
+          jqPathExpressions:
+            - '.spec.paused'
 
   imperative:
     # NOTE: We *must* use lists and not hashes. As hashes lose ordering once parsed by helm
@@ -286,6 +269,7 @@ clusterGroup:
         # per playbook timeout in seconds
         timeout: 234
         # verbosity: "-v"
+
   managedClusterGroups:
     exampleRegion:
       name: group-one

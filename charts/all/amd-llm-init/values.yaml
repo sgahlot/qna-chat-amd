@@ -1,0 +1,88 @@
+global:
+  pattern: amdllm
+
+  clusterDomain: lab.com
+
+  amdllm:
+    namespace: amd-llm
+  
+job:
+  image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+  
+serviceAccountName: amd-pattern-sa
+
+rbac:
+  roles:
+    - name: amd-pattern-rhoai-role
+      createRole: true
+      apiGroups:
+        - '""'
+        - '"apps"'
+        - '"batch"'
+        - '"machineconfiguration.openshift.io"'
+        - '"rbac.authorization.k8s.io"'
+        - '"security.openshift.io"'
+        - '"datasciencecluster.opendatahub.io"'
+        - '"operator.knative.dev"'
+        - '"build.openshift.io"'
+      scope:
+        cluster: true
+      resources:
+        - namespaces
+        - secrets
+        - datascienceclusters
+        - clusterrolebindings
+        - knativeservings
+        - jobs
+        - buildconfigs
+        - builds
+        - buildconfigs/instantiate
+      verbs:
+        - "create"
+        - "get"
+        - "list"
+        - "patch"
+        - "update"
+        - "use"
+        - "watch"
+    - name: amd-pattern-rhoai-role-mcp-label
+      createRole: true
+      apiGroups:
+        - '"machineconfiguration.openshift.io"'
+      scope:
+        cluster: true
+      resources:
+        - machineconfigpools
+        - machineconfigs
+      verbs:
+        - "get"
+        - "list"
+        - "patch"
+        - "watch"
+  roleBindings:
+    - name: amd-pattern-rhoai-rolebind
+      createBinding: true
+      scope:
+        cluster: true
+        namespace: ""
+      subjects:
+        kind: ServiceAccount
+        name: amd-pattern-sa
+        namespace: amd-llm
+        apiGroup: ""
+      roleRef:
+        kind: ClusterRole
+        name: amd-pattern-rhoai-role
+    - name: amd-pattern-rhoai-role-mcp-label
+      createBinding: true
+      scope:
+        cluster: true
+        namespace: ""
+      subjects:
+        kind: ServiceAccount
+        name: amd-pattern-sa
+        namespace: amd-llm
+        apiGroup: ""
+      roleRef:
+        kind: ClusterRole
+        name: amd-pattern-rhoai-role-mcp-label

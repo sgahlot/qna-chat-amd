@@ -1,11 +1,42 @@
 global: 
-  pattern: gaudillm
+  pattern: amdllm
 
-  gaudillm:
-    namespace: gaudi-llm
+  amdllm:
+    namespace: amd-llm
     build_envs: [] # http_proxy/https_prxy can be set here
     runtime_envs: []
 
-    reranking:  
-      image: image-registry.openshift-image-registry.svc:5000/gaudi-llm/reranking-tei:latest
-      git_ref: 8ebe2bf # make sure to validate buildconfig & other change scope before updating
+    service_name: reranking
+    service_port: 5003
+    container_port: 8000
+    route_path: /v1/reranking
+    python_path: "/home/user/.local/lib/python3.11/site-packages:/home/user"
+    docker_file_Path: comps/rerankings/src/Dockerfile
+#
+#    image:
+#      pre_built: quay.io/sgahlot/opea/reranking:latest
+#      from_source: image-registry.openshift-image-registry.svc:5000/opea/reranking:latest
+#
+#    git_repo_uri: https://github.com/opea-project/GenAIComps.git
+#    git_ref: 3e559df   # make sure to validate buildconfig & other change scope before updating
+
+    secret:
+      name: hf-token-secret
+      key: huggingface
+      env_var_name: HUGGINGFACEHUB_API_TOKEN
+
+    tei_service:
+      name: tei-reranker-service
+      port: 5006
+      env_var_name: TEI_RERANKING_ENDPOINT
+
+    env:
+      - name: HOME
+        value: /tmp/temp-data
+      - name: PYTHONPATH
+        value: /home/user/.local/lib/python3.11/site-packages:/home/user
+
+    volume:
+      - name: temp-data
+        path: /tmp/temp-data
+

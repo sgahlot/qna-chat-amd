@@ -1,11 +1,38 @@
 global: 
-  pattern: gaudillm
+  pattern: amdllm
 
-  gaudillm:
-    namespace: gaudi-llm
+  amdllm:
+    namespace: amd-llm
     build_envs: [] # http_proxy/https_prxy can be set here
     runtime_envs: []
-    
-    dataprep:  
-      image: image-registry.openshift-image-registry.svc:5000/gaudi-llm/dataprep-redis:latest
-      git_ref: 8ebe2bf # make sure to validate buildconfig & other change scope before updating
+
+    service_name: dataprep
+    service_port: 5001
+    container_port: 5000
+    route_path: /v1/dataprep
+    docker_file_Path: comps/dataprep/src/Dockerfile
+
+#    image:
+#      pre_built: quay.io/sgahlot/opea/dataprep:latest
+#      from_source: image-registry.openshift-image-registry.svc:5000/opea/dataprep:latest
+#
+#    git_repo_uri: https://github.com/opea-project/GenAIComps.git
+#    git_ref: 3e559df   # make sure to validate buildconfig & other change scope before updating
+
+    env:
+      - name: HOME
+        value: /tmp/temp-data
+      - name: PYTHONPATH
+        value: /home/user/.local/lib/python3.11/site-packages:/home/user
+      - name: REDIS_URL
+        value: redis://redis-vector-db.amd-llm.svc.cluster.local:6379
+      - name: INDEX_NAME
+        value: rag-redis
+      - name: NLTK_DATA
+        value: /tmp/temp-data/nltk_data
+
+    volume:
+      - name: temp-data
+        path: /tmp/temp-data
+      - name: uploaded-files
+        path: /home/user/comps/dataprep/src/uploaded_files

@@ -1,10 +1,15 @@
 *~
 *.swp
 *.swo
+*.out
 values-secret*
 .*.expected.yaml
 pattern-vault.init
 vault.init
 super-linter.log
 common/pattern-vault.init
+.idea
 TMP/*
+venv
+.DS_Store
+

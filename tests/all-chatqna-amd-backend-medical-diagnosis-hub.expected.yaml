@@ -1,0 +1,58 @@
+---
+# Source: chatqna-amd-backend/templates/backend-buildconfig.yaml
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: chatqna-megaservice-server
+  namespace: gaudi-llm
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+spec:
+  output:
+    to:
+      kind: "ImageStreamTag"
+      name: "chatqna:latest"
+  failedBuildsHistoryLimit: 5
+  successfulBuildsHistoryLimit: 5
+  nodeSelector: null
+  postCommit: {}
+  resources: {}
+  runPolicy: SerialLatestOnly
+  source:
+    contextDir: ChatQnA/docker
+    git:
+      ref: 9f36e84c
+      uri: https://github.com/opea-project/GenAIExamples.git
+    type: Git
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  triggers:
+  - type: ConfigChange
+---
+# Source: chatqna-amd-backend/templates/backend-imagestream.yaml
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: chatqna
+  namespace: gaudi-llm
+spec:
+  lookupPolicy:
+    local: true
+---
+# Source: chatqna-amd-backend/templates/backend-route.yaml
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: megaservice-main-route
+  namespace: gaudi-llm
+spec:
+  host: megaservice-gaudi-llm.apps.region.example.com
+  port:
+    targetPort: 8888
+  to:
+    kind: Service
+    name: chatqna-amd-backend-server
+    weight: 100
+  wildcardPolicy: None

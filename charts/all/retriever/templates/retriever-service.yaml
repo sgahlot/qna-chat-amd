@@ -5,13 +5,13 @@ metadata:
     kompose.cmd: kompose convert -f docker_compose.yaml
     kompose.version: 1.33.0 (3ce457399)
   labels:
-    io.kompose.service: retriever
-  name: retriever
-  namespace: {{ .Values.global.gaudillm.namespace }}
+    io.kompose.service: {{ .Values.global.amdllm.service_name }}
+  name: {{ .Values.global.amdllm.service_name }}
+  namespace: {{ .Values.global.amdllm.namespace }}
 spec:
   ports:
-    - name: "7000"
-      port: 7000
-      targetPort: 7000
+    - name: "{{ .Values.global.amdllm.service_port }}"
+      port: {{ .Values.global.amdllm.service_port }}
+      targetPort: {{ .Values.global.amdllm.container_port }}
   selector:
-    io.kompose.service: retriever
+    io.kompose.service: {{ .Values.global.amdllm.service_name }}
