@@ -3,8 +3,8 @@ global:
 
   clusterDomain: igk.internal
 
-  build:
-    enabled: false
+#  build:
+#    enabled: false
 
   amdllm:
     namespace: amd-llm
