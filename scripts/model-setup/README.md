@@ -37,19 +37,21 @@ Once MinIO is setup, you can access it within your project. The yaml that was ap
   * Take note of the `minio-api` route location as that will be needed in next section.
 
 
-### Create Data connection
-Create a new data connection that can be used by the init-container (`storage-initializer`) to fetch the model uploaded in next step when deploying the model.
+### Create connection
+Create a new connection that can be used by the init-container (`storage-initializer`) to fetch the model uploaded in next step when deploying the model.
 
-To create a Data connection, use the following steps:
-* Click on `Add data connection` button in the  `Data connections` tab in your newly created project
-* Use the following values for this data connection:
-  * _Name_: `minio`
-  * _Access key_: value specified for `AWS_ACCESS_KEY_ID` field in `Create Workbench` section
-  * _Secret key_: value specified for `AWS_SECRET_ACCESS_KEY` field in `Create Workbench` section
-  * _Endpoint_: value specified for `AWS_S3_ENDPOINT` field in `Create Workbench` section
-  * _Access key_: value specified for `AWS_DEFAULT_REGION` field in `Create Workbench` section
-  * _Bucket_: value specified for `AWS_S3_BUCKET` field in `Create Workbench` section
-* Create the data connection by clicking on `Add data connection` button
+To create a connection, use the following steps:
+* Click on `Add connection` button in the  `Connections` tab in your newly created project
+* Use the following values for this connection:
+  * _Name_: `model-storage`
+  * _Access key_: MinIO username if using `MinIO` else use `AWS` credentials
+  * _Secret key_: MinIO password if using `MinIO` else use `AWS` credentials
+  * _Endpoint_: minio-api route location if using `MinIO` else use `AWS S3` endpoint that is in the format of `https://s3.<REGION>.amazonaws.com`
+  * _Region_: Set it to us-east-1 if using `MinIO` otherwise use the correct `AWS` region
+  * _Bucket_: `models` 
+    * This bucket should either be existing or will be created by the Jupyter notebook to upload the model
+    * If using `AWS S3` and the bucket does not exist, make sure correct permissions are assigned to the IAM user to be able to create the bucket
+* Create the connection by clicking on `Create` button
 
 
 ### Create workbench
@@ -64,7 +66,7 @@ Use the following values:
   * Accelerator: **NVIDIA GPU**
   * Number of accelerators: **1**
 * _Cluster storage_: **50GB**
-* Connections: Click on `Attach existing connections` button and **Attach** the Data Connection created in previous step. This will pass on the data connection values to the RHOAI workbench when it is started.
+* Connections: Click on `Attach existing connections` button and **Attach** the Connection created in previous step. This will pass on the connection values to the RHOAI workbench when it is started.
 
 Create the workbench with above settings.
 
@@ -94,7 +96,7 @@ _The notebook mentioned in this section is used to download the `meta-llama/Llam
 
 
 ### Deploy model
-Once the initial notebook has run successfully and the data connection is created, you can deploy the model by following these steps:
+Once the initial notebook has run successfully and the connection is created, you can deploy the model by following these steps:
 * In the RHOAI tab, select `Models` tab (_for your newly created project_) and click on `Deploy model` button 
 * Fill in the following fields as described below:
   * _Model name_: **<PROVIDE_a_name_for_the_model>**
@@ -104,8 +106,8 @@ Once the initial notebook has run successfully and the data connection is create
   * _Accelerator_: **NVIDIA GPU**
   * _Model route_:
     * _If you want to access this model endpoint from outside the cluster_, make sure to check the `Make deployed models available through an external route` checkbox. By default, the model endpoint is only available as an _internal service_.
-  * _Model location_: Select **Existing data connection** option
-    * _Name_: **Name of data connection created in previous step**
+  * _Model location_: Select **Existing connection** option
+    * _Name_: **Name of connection created in previous step**
     * _Path_: **Llama-3.1-8B-Instruct**
       * _This is where the model was copied to in `download-n-upload-model-to-minio` notebook._
 * In `Additional serving runtime arguments` (under Configuration parameters), provide the following:
