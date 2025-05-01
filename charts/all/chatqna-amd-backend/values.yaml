@@ -3,6 +3,9 @@ global:
 
   clusterDomain: igk.internal
 
+  build:
+    enabled: false
+
   amdllm:
     namespace: amd-llm
     build_envs: [] # http_proxy/https_prxy can be set here
@@ -19,6 +22,7 @@ global:
 #
 #    git_repo_uri: https://github.com/opea-project/GenAIExamples.git
 #    git_ref: 61a8bef   # make sure to validate buildconfig & other change scope before updating
+
 
     megaservice_envs:
       - name: EMBEDDING_SERVER_HOST_IP
@@ -43,9 +47,3 @@ global:
         value: ${PYTHONPATH}:/home/user/GenAIComps
       - name: LOGFLAG
         value: '"True"'
-
-#    volume:
-#      megaservice_config:
-#        name: chatqna-config
-#        path: /home/user/chatqna-config.yaml
-#        subPath: chatqna-config.yaml
