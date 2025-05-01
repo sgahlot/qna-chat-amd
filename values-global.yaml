@@ -40,10 +40,7 @@ global:
         pre_built: quay.io/sgahlot/opea/reranking:APR.26
         from_source: image-registry.openshift-image-registry.svc:5000/opea/reranking:latest
 
-  build:
-    enabled: false
-
-
+  buildEnabled: false
 
 main:
   clusterGroupName: hub
