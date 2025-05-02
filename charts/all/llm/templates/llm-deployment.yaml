@@ -52,9 +52,9 @@ spec:
             {{- end }}
           image:
             {{- if .Values.global.buildEnabled }}
-            {{ .Values.global.amdllm.images.llm_textgen.from_source }}
+            {{ .Values.global.amdllm.image.from_source }}
             {{- else}}
-            {{ .Values.global.amdllm.images.llm_textgen.pre_built }}
+            {{ .Values.global.amdllm.image.pre_built }}
             {{- end }}
           name: {{ .Values.global.amdllm.service_name }}-server
           ports:

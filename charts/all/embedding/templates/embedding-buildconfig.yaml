@@ -17,8 +17,8 @@ spec:
   runPolicy: SerialLatestOnly
   source:
     git:
-      ref: {{ .Values.global.amdllm.gen_ai_comps.git_ref }}
-      uri: {{ .Values.global.amdllm.gen_ai_comps.git_uri }}
+      ref: {{ .Values.global.amdllm.genAiCompsGitUri }}
+      uri: {{ .Values.global.amdllm.genAiCompsGitRef }}
     type: Git
   strategy:
     type: Docker

@@ -18,8 +18,8 @@ spec:
   source:
     contextDir: {{ .Values.global.amdllm.source_context_dir }}
     git:
-      ref: {{ .Values.global.amdllm.gen_ai_examples.git_ref }}
-      uri: {{ .Values.global.amdllm.gen_ai_examples.git_uri }}
+      ref: {{ .Values.global.amdllm.genAiExamplesGitUri }}
+      uri: {{ .Values.global.amdllm.genAiExamplesGitRef }}
     type: Git
   strategy:
     type: Docker
